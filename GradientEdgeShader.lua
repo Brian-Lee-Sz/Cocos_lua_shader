@@ -53,10 +53,9 @@ function GradientEdgeShader.setTarget(target, from, to, m_color, m_radius)
             if(m_radius_ > 0.0){
                 vec4 accum = vec4(1.0);
                 accum.rgb = vec3(%f, %f, %f) / 255.0;
-
                 float alpha = clamp(c.a, 0.0, 0.5) * 2.0;//将差异放大
                 float color = (clamp(c.a, 0.5, 1.0) - 0.5) * 2.0;
-                c.xyz = (c.xyz) * color + accum.rgb * (1.0 - color) ;
+                c.xyz = (c.xyz) * color + accum.rgb * (1.0 - color);
             }
             gl_FragColor = c;
         }
