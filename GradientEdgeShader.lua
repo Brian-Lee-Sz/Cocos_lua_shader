@@ -33,11 +33,8 @@ function GradientEdgeShader.setTarget(target, from, to, m_color, m_radius)
         vec3 verify(vec2 td, vec3 from, vec3 to)
         {
             vec3 temp = vec3(0.0);
-            float offset = td.y <= 0.7 ? td.y * 4.0 : 3.0;
-            float temp_offset = 1.0 - td.y * offset < 0.0 ? 0.0 : 1.0 - td.y * offset;
-            temp.r = (to.r - (to.r - from.r ) * temp_offset) / 255.0;
-            temp.g = (to.g - (to.g - from.g ) * temp_offset) / 255.0;
-            temp.b = (to.b - (to.b - from.b ) * temp_offset) / 255.0;
+            float weight = (clamp(td.y, 0.25, 0.75) - 0.25) * 2.0;//将差异放大
+            temp.rgb = to.rgb * weight / 255.0 + from.rgb * (1.0 - weight) / 255.0;
             return temp;
         }
 
@@ -48,8 +45,6 @@ function GradientEdgeShader.setTarget(target, from, to, m_color, m_radius)
             vec3 t_to = vec3(%f, %f, %f);
             c.rgb = verify(v_texCoord, t_from, t_to);
             float m_radius_ = %f;
-            float m_radius_x = 0.003;
-            float m_radius_y = 0.002;
             if(m_radius_ > 0.0){
                 vec4 accum = vec4(1.0);
                 accum.rgb = vec3(%f, %f, %f) / 255.0;
