@@ -56,22 +56,28 @@ function GradientEdgeShader.setTarget(target, from, to, m_color, m_radius)
     ]]
     local m_r = m_color and (m_radius and m_radius or 0.003) or 0
     local temp_m_color = m_color or cc.c3b(0, 0, 0)
-    fragment =
-        string.format(
-        fragment,
-        from.r,
-        from.g,
-        from.b,
-        to.r,
-        to.g,
-        to.b,
-        m_r,
-        temp_m_color.r,
-        temp_m_color.g,
-        temp_m_color.b
-    )
-    local pProgram = cc.GLProgram:createWithByteArrays(vertex, fragment)
-    target:setGLProgram(pProgram)
+    local name =
+        string.format("GradientEdgeShader_%02f_%02f_%02f_%02f_%02f_%02f", from.r, from.g, from.b, to.r, to.g, to.b)
+    local program = cc.GLProgramCache:getInstance():getGLProgram(name)
+    if not program then
+        fragment =
+            string.format(
+            fragment,
+            from.r,
+            from.g,
+            from.b,
+            to.r,
+            to.g,
+            to.b,
+            m_r,
+            temp_m_color.r,
+            temp_m_color.g,
+            temp_m_color.b
+        )
+        program = cc.GLProgram:createWithByteArrays(vertex, fragment)
+        cc.GLProgramCache:getInstance():addGLProgram(program, name)
+    end
+    target:setGLProgram(program)
 end
 
 return GradientEdgeShader
