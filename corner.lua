@@ -88,9 +88,13 @@ function CornerShader.setTarget(target, cornerRadius)
             gl_FragColor=c;
         }  
     ]]
-	fragment = string.format(fragment, cornerRadius)
-	local pProgram = cc.GLProgram:createWithByteArrays(vertex, fragment)
-	target:setGLProgram(pProgram)
+	local program = cc.GLProgramCache:getInstance():getGLProgram(string.format("cornerRadius_%f", cornerRadius))
+    	if not program then
+        	fragment = string.format(fragment, cornerRadius)
+        	program = cc.GLProgram:createWithByteArrays(vertex, fragment)
+        	cc.GLProgramCache:getInstance():addGLProgram(program, string.format("cornerRadius_%f", cornerRadius))
+    	end
+    	target:setGLProgram(program)
 end
 
 return CornerShader 
